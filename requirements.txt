@@ -1,5 +1,7 @@
 # MkDocs
 mkdocs>=1.5.0
 mkdocs-material>=9.4.0
-mkdocs-mermaid2-plugin>=1.1.1
 pymdown-extensions>=9.3
+
+# Mermaid は mkdocs-material + pymdownx.superfences (custom_fences) で描画するため
+# mkdocs-mermaid2-plugin は不要。plugins に登録して使う場合のみ追加すること。
