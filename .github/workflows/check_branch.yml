@@ -1,6 +1,9 @@
 name: Check Branch Naming
 
-on: pull_request
+on:
+  pull_request:
+    # edited: マージ先（base）を変更したときにも再検査する
+    types: [opened, synchronize, reopened, edited]
 jobs:
   check:
     runs-on: ubuntu-latest
