@@ -27,3 +27,5 @@ flowchart LR
 
 `docs/` に Markdown を追加し、`mkdocs.yml` の `nav` に登録する。
 登録しないとサイトに表示されない。
+
+ブランチ戦略・Issue 駆動・承認と作業報告のルールは [開発ガイド](development.md) を参照。

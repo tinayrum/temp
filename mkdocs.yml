@@ -70,3 +70,4 @@ extra_javascript:
 # ナビゲーションメニューの設定
 nav:
   - Home: index.md
+  - 開発ガイド: development.md
