@@ -61,6 +61,10 @@ gitGraph
 - 形式は `type(scope): subject`。例: `feat(api): add login`
 - type は `feat` / `fix` / `docs` / `chore` / `refactor` / `test` / `ci`。scope は任意。
 - 1 コミット 1 目的。CI（`ci.yml` の commit-lint）が PR 内の全コミットを検査する。
+- **PR タイトルも同じ形式にする**（例: `ci: skip commit-lint on release PRs`）。
+  マージは squash を基本とし、squash のコミット名は PR タイトルになる（リポジトリ設定で既定値を「PR タイトル」にする）。
+  CI（`ci.yml` の pr-title-lint）が PR タイトルを検査する。
+- `develop` → `main`（リリース）の PR では、develop で検査済みのため commit-lint と pr-title-lint を行わない。
 
 ## Issue 駆動の進め方
 
@@ -143,7 +147,7 @@ PR 作成時は同じ内容を PR 本文の「作業報告」に入れる。
 
 | ワークフロー | タイミング | 内容 |
 | :--- | :--- | :--- |
-| `ci.yml` | PR（main / develop 向け）、develop への push | `mkdocs build --strict`、コミットメッセージ検査、Docs as Code 検査 |
+| `ci.yml` | PR（main / develop 向け）、develop への push | `mkdocs build --strict`、コミットメッセージ・PR タイトル検査（develop → main の PR は対象外）、Docs as Code 検査 |
 | `check_branch.yml` | PR | ブランチ名 prefix とマージ先の組み合わせ検査 |
 | `pr-labeler.yml` | PR | ブランチ名・変更ファイルからラベル付与 |
 | `release-drafter.yml` | main への push | リリースノート・タグの自動作成 |

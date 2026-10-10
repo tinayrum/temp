@@ -44,6 +44,7 @@ mkdocs serve                  # http://127.0.0.1:8000 でドキュメントを�
 - [ ] Actions の「Sync Labels」を手動実行し、`.github/labels.yml` のラベルを作成する
 - [ ] App 単体運用の場合は `.github/workflows/notify_portal.yml` を削除する
 - [ ] リポジトリ設定で `main` と `develop` のブランチ保護（PR 必須・force push 禁止・CI 必須）を有効にする
+- [ ] Settings → General → Pull Requests で squash マージを許可し、既定のコミットメッセージを「Pull request title」にする
 - [ ] Secrets / Variables に `ORG_ADMIN_TOKEN` と `PORTAL_REPO_NAME` を登録する（Portal 連携する場合）
 
 ## 🤖 AI エージェントを使う場合
@@ -93,6 +94,7 @@ flowchart LR
 ### コミットメッセージ規約
 
 - `type(scope): subject` 例: `feat(api): add login`
+- PR タイトルも同じ形式（squash マージのコミット名になる）
 - type例: feat, fix, docs, chore, refactor, test, ci
 - scopeは任意、subjectは簡潔に
 
