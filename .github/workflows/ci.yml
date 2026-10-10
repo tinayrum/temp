@@ -26,9 +26,11 @@ jobs:
 
   # 実装言語のテストを追加したら、ここに job を足す（例: pytest）。
 
+  # develop → main（リリース）の PR は、develop に取り込み済みのコミットを再検査しない。
+  # squash マージのコミット名は PR タイトルになるため、代わりに pr-title-lint で担保する。
   commit-lint:
     name: "Commit message (type(scope): subject)"
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.head_ref != 'develop'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,6 +57,24 @@ jobs:
             echo "形式: type(scope): subject / type: feat, fix, docs, chore, refactor, test, ci"
           fi
           exit $fail
+
+  pr-title-lint:
+    name: "PR title (type(scope): subject)"
+    if: github.event_name == 'pull_request' && github.head_ref != 'develop'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR title
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          pattern='^(feat|fix|docs|chore|refactor|test|ci)(\([^)]+\))?!?: ?.+'
+          if [[ "$PR_TITLE" =~ $pattern ]]; then
+            echo "✅ $PR_TITLE"
+          else
+            echo "::error::PR タイトルが規約に合っていません: $PR_TITLE"
+            echo "squash マージ時のコミット名になるため、type(scope): subject で付けてください。"
+            exit 1
+          fi
 
   docs-as-code:
     name: Docs as Code (src/ changes need docs/)

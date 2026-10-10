@@ -72,6 +72,7 @@ options:
 
 ## コミット
 
-- メッセージは `type(scope): subject`。
+- メッセージは `type(scope): subject`。PR タイトルも同じ形式で付ける（`gh pr create --base develop --title "type(scope): subject"`）。
+- マージは承認後に `gh pr merge --squash` で行う。squash のコミット名は PR タイトルになる。
 - 既存ファイルは差分編集する。全文を書き直さない（改行コードの差分が全行に広がるため）。
 - 変更していないファイルをステージしない。`git add -A` ではなくパスを指定する。
