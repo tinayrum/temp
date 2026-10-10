@@ -1,5 +1,37 @@
 # [App Name] Application Repository
 
+<!-- 1〜3行でアプリケーションの概要を書く -->
+
+## ⚡ QuickStart
+
+```bash
+git clone https://github.com/tinayrum/<repo>.git
+cd <repo>
+git switch develop
+python -m venv .venv
+. .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+mkdocs serve                  # http://127.0.0.1:8000 でドキュメントを確認
+```
+
+## 📦 依存関係
+
+| 対象 | 内容 | 定義場所 |
+| :--- | :--- | :--- |
+| ドキュメント | Python 3.10 以上、MkDocs / mkdocs-material / pymdown-extensions | `requirements.txt` |
+| CI | GitHub Actions（`ci.yml` / `check_branch.yml` / `pr-labeler.yml` / `release-drafter.yml`） | `.github/workflows/` |
+| 実装 | TODO: 実装言語・ランタイム・ライブラリを追記する | `src/` |
+
+## 🔁 開発手順（概要）
+
+1. **Issue を起票する**（`🤖 開発タスク` テンプレート推奨）。やり取りはすべて Issue で行う。
+2. `develop` から作業ブランチを切る（例: `feature/add-login-function`）。
+3. 実装し、同じブランチで `docs/` も更新する（Docs as Code）。`mkdocs build --strict` を通す。
+4. `develop` 向けに PR を作る（`Closes #<Issue番号>`）。CI が通り、承認されたらマージ。
+5. リリース時に `develop` → `main` の PR を作る。main へのマージでリリースが自動作成される。
+
+詳細（ブランチ戦略・承認ゲート・作業報告の形式）は [`docs/development.md`](docs/development.md) を参照。
+
 ## 🚀 テンプレートから作成した直後にやること
 
 - [ ] `README.md` の `[App Name]` とこのセクション以下を、プロジェクトの内容に書き換える
@@ -7,8 +39,12 @@
 - [ ] `docs/index.md` をプロジェクトの概要に書き換える
 - [ ] `AGENTS.md` の「セットアップとビルド」に、実装言語のビルド・テストコマンドを追記する
 - [ ] `.github/CODEOWNERS` にレビュー担当を設定する
+- [ ] `main` から `develop` ブランチを作成して push する（テンプレートからの作成では main しか複製されない）
+- [ ] リポジトリ設定のデフォルトブランチを `develop` にする（PR の既定のマージ先を develop にするため）
+- [ ] Actions の「Sync Labels」を手動実行し、`.github/labels.yml` のラベルを作成する
 - [ ] App 単体運用の場合は `.github/workflows/notify_portal.yml` を削除する
-- [ ] リポジトリ設定で `main` ブランチ保護（PR 必須・force push 禁止）を有効にする
+- [ ] リポジトリ設定で `main` と `develop` のブランチ保護（PR 必須・force push 禁止・CI 必須）を有効にする
+- [ ] Settings → General → Pull Requests で squash マージを許可し、既定のコミットメッセージを「Pull request title」にする
 - [ ] Secrets / Variables に `ORG_ADMIN_TOKEN` と `PORTAL_REPO_NAME` を登録する（Portal 連携する場合）
 
 ## 🤖 AI エージェントを使う場合
@@ -18,7 +54,27 @@
 Claude Code の権限設定は `.claude/settings.json` にある。
 プロジェクト固有のビルド・テスト手順は `AGENTS.md` に追記して育てること。
 
+Claude Code は単体で「計画 → 実装 → 作業報告 → PR → マージ」まで進める前提で設定している。人間の役割は次の 2 つ。
+
+- **Issue を起票する**: 作業の依頼・相談・不具合報告はすべて Issue で行う。
+- **選択肢で答える**: 着手・マージ・リリースの承認や仕様の質問は、Claude Code が選択肢方式
+  （`AskUserQuestion`）で問い合わせる。選んで **Submit Answer** を押すだけでよい。
+  回答と作業報告は Claude Code が Issue に記録する。
+
 ## 🛠 開発ルール (Docs as Code)
+
+### ブランチ戦略
+
+`main` ＝ リリース、`develop` ＝ ステージング。作業ブランチは `develop` から切って `develop` に戻し、
+リリース時に `develop` から `main` へ反映する。
+
+```mermaid
+flowchart LR
+    F[feature/ bugfix/ docs/ chore/] -- PR --> D[develop<br>ステージング]
+    D -- PR（リリース） --> M[main<br>リリース]
+    H[hotfix/] -- PR --> M
+    H -. 戻し .-> D
+```
 
 ### ブランチ命名規則
 
@@ -33,16 +89,20 @@ Claude Code の権限設定は `.claude/settings.json` にある。
 | `docs/` | ドキュメント更新のみ | Patch | `docs/update-api-docs` |
 | `chore/` | その他メンテナンス | Patch | `chore/update-dependencies` |
 
+`main` に PR できるのは `develop` / `release/*` / `hotfix/*` のみ（`check_branch.yml` が検証する）。
+
 ### コミットメッセージ規約
 
 - `type(scope): subject` 例: `feat(api): add login`
+- PR タイトルも同じ形式（squash マージのコミット名になる）
 - type例: feat, fix, docs, chore, refactor, test, ci
 - scopeは任意、subjectは簡潔に
 
 ### 運用のポイント
 
 - **Docs as Code**: コード修正時はdocs/も必ず更新
-- **main直Push禁止**: PR経由でマージ
-- **CI/CD必須**: GitHub Actions等で自動テスト・デプロイ
+- **main / develop 直Push禁止**: PR経由でマージ
+- **CI/CD必須**: GitHub Actions で docs ビルド・コミット規約・Docs as Code を検査（`ci.yml`）
 - **README.md整備**: QuickStart・開発手順・依存関係を明記
 - **テンプレート活用**: PRテンプレート・Issueテンプレートを用意
+- **Issue駆動**: 開発タスク管理とやり取りは Issue で行う

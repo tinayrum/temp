@@ -5,7 +5,9 @@
 
 特に守るもの:
 
-- ブランチ prefix は `feature/` `bugfix/` `hotfix/` `release/` `docs/` `chore/`。`main` へ直接コミットしない。
+- ブランチ prefix は `feature/` `bugfix/` `hotfix/` `release/` `docs/` `chore/`。`main`（リリース）/ `develop`（ステージング）へ直接コミットしない。
+- 作業ブランチは `develop` から切り、`develop` に PR する。`main` に PR してよいのは `develop` / `release/*` / `hotfix/*` のみ。
+- 開発タスクとやり取りは Issue で行う。承認・質問は選択肢方式で問い合わせ、結果を Issue に記録する。
 - コミットメッセージは `type(scope): subject`。
 - Docs as Code: `src/` を変更したら `docs/` も同じ PR で更新し、新規ページは `mkdocs.yml` の `nav` に登録する。
 - 図は Mermaid で書く。
