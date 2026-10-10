@@ -3,6 +3,8 @@ name: CI
 on:
   pull_request:
     branches: [main, develop]
+    # edited: PR タイトルやマージ先（base）を変更したときにも再検査する
+    types: [opened, synchronize, reopened, edited]
   push:
     branches: [develop]
 
