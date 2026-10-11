@@ -150,7 +150,12 @@ PR 作成時は同じ内容を PR 本文の「作業報告」に入れる。
 | `ci.yml` | PR（main / develop 向け）、develop への push | `mkdocs build --strict`、コミットメッセージ・PR タイトル検査（develop → main の PR は対象外）、Docs as Code 検査 |
 | `check_branch.yml` | PR | ブランチ名 prefix とマージ先の組み合わせ検査 |
 | `pr-labeler.yml` | PR | ブランチ名・変更ファイルからラベル付与 |
-| `release-drafter.yml` | main への push | リリースノート・タグの自動作成 |
+| `release-drafter.yml` | main への push | リリースノート・タグの自動作成（`GITHUB_TOKEN` で動く） |
+
+`ci.yml` / `check_branch.yml` / `release-drafter.yml` は、[tinayrum/.github](https://github.com/tinayrum/.github) の再利用ワークフロー
+（`reusable-ci.yml` / `reusable-check-branch.yml` / `reusable-release-drafter.yml`）を `@main` で呼び出すだけにしている。
+CI の中身を変えるときは tinayrum/.github 側を変更する。変更は呼び出している全リポジトリに反映される。
+docs ビルドの有無や Python のバージョンなどは、呼び出し側の `with:` で切り替えられる（入力の一覧は各ワークフローの先頭コメント）。
 
 Docs as Code 検査は、`src/` に変更があるのに `docs/` に変更がない PR を失敗させる。
 ドキュメント更新が本当に不要な場合だけ、PR に `skip-docs` ラベルを付けて理由を PR 本文に書く。

@@ -19,7 +19,7 @@ mkdocs serve                  # http://127.0.0.1:8000 でドキュメントを�
 | 対象 | 内容 | 定義場所 |
 | :--- | :--- | :--- |
 | ドキュメント | Python 3.10 以上、MkDocs / mkdocs-material / pymdown-extensions | `requirements.txt` |
-| CI | GitHub Actions（`ci.yml` / `check_branch.yml` / `pr-labeler.yml` / `release-drafter.yml`） | `.github/workflows/` |
+| CI | GitHub Actions（`ci.yml` / `check_branch.yml` / `pr-labeler.yml` / `release-drafter.yml`）。`ci.yml` / `check_branch.yml` / `release-drafter.yml` の中身は [tinayrum/.github](https://github.com/tinayrum/.github) の再利用ワークフロー | `.github/workflows/` |
 | 実装 | TODO: 実装言語・ランタイム・ライブラリを追記する | `src/` |
 
 ## 🔁 開発手順（概要）
@@ -39,13 +39,15 @@ mkdocs serve                  # http://127.0.0.1:8000 でドキュメントを�
 - [ ] `docs/index.md` をプロジェクトの概要に書き換える
 - [ ] `AGENTS.md` の「セットアップとビルド」に、実装言語のビルド・テストコマンドを追記する
 - [ ] `.github/CODEOWNERS` にレビュー担当を設定する
-- [ ] `main` から `develop` ブランチを作成して push する（テンプレートからの作成では main しか複製されない）
+- [ ] 公開リポジトリの場合は、リポジトリ設定で `main` と `develop` のブランチ保護（PR 必須・force push 禁止・CI 必須）を有効にする（Free プランの非公開リポジトリでは使えない）
+
+次の項目は、tinayrum/.github の `tools/new_repo` で作成した場合は自動で済んでいる。
+画面から作成した場合は `./tools/new_repo.sh --configure-only <repo-name>` でまとめて設定できる。
+
+- [ ] `main` から `develop` ブランチを作成する（テンプレートからの作成では main しか複製されない）
 - [ ] リポジトリ設定のデフォルトブランチを `develop` にする（PR の既定のマージ先を develop にするため）
-- [ ] Actions の「Sync Labels」を手動実行し、`.github/labels.yml` のラベルを作成する
-- [ ] App 単体運用の場合は `.github/workflows/notify_portal.yml` を削除する
-- [ ] リポジトリ設定で `main` と `develop` のブランチ保護（PR 必須・force push 禁止・CI 必須）を有効にする
 - [ ] Settings → General → Pull Requests で squash マージを許可し、既定のコミットメッセージを「Pull request title」にする
-- [ ] Secrets / Variables に `ORG_ADMIN_TOKEN` と `PORTAL_REPO_NAME` を登録する（Portal 連携する場合）
+- [ ] Actions の「Sync Labels」を実行し、`.github/labels.yml` のラベルを作成する
 
 ## 🤖 AI エージェントを使う場合
 
