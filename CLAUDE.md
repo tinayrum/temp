@@ -68,6 +68,7 @@ options:
 
 - `.claude/settings.json` の設定に従う。deny 対象の操作は実行せず、提案として提示する。
 - `.github/workflows/` の編集は deny。必要なら差分を提示し、人間に適用してもらう。
+  `ci.yml` / `check_branch.yml` / `release-drafter.yml` の中身は tinayrum/.github の再利用ワークフローにあるため、CI の挙動を変える提案はそちらへの Issue として出す。
 - push は作業ブランチだけ（`git push -u origin <prefix>/<name>`）。`main` / `develop` へは push しない。
 
 ## コミット
