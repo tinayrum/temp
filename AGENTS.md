@@ -97,6 +97,7 @@ mkdocs build --strict         # PR を出す前に必ず通す
 ## このリポジトリ固有（Organization: tinayrum / 業務用テンプレート）
 
 - `main` への push で `release-drafter` がリリースを自動公開する。タグを手動で作らない。
-- `notify_portal.yml` は Portal リポジトリへ更新を通知する。App 単体運用のリポジトリでは削除する。
-- 必要な secrets / vars: `ORG_ADMIN_TOKEN`, `PORTAL_REPO_NAME`。値をコードやドキュメントに書かない。
+- `ci.yml` / `check_branch.yml` / `release-drafter.yml` は tinayrum/.github の再利用ワークフローを呼ぶだけ。
+  CI の中身を変えるときは tinayrum/.github 側を変更する（全リポジトリに反映される）。
+- ワークフローは `GITHUB_TOKEN` だけで動く。追加の Secret は不要。認証情報をコードやドキュメントに書かない。
 - 業務案件で使うテンプレートのため、特定顧客に固有の名称・仕様をここに残さない。
