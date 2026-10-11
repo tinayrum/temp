@@ -1,5 +1,6 @@
 name: CI
 
+# 中身は tinayrum/.github の再利用ワークフロー（reusable-ci.yml）にある。CI を変えるときはそちらを変更する。
 on:
   pull_request:
     branches: [main, develop]
@@ -12,95 +13,9 @@ permissions:
   contents: read
 
 jobs:
-  docs-build:
-    name: Docs build (mkdocs --strict)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Build
-        run: mkdocs build --strict
+  ci:
+    uses: tinayrum/.github/.github/workflows/reusable-ci.yml@main
+    with:
+      python-version: "3.12"
 
   # 実装言語のテストを追加したら、ここに job を足す（例: pytest）。
-
-  # develop → main（リリース）の PR は、develop に取り込み済みのコミットを再検査しない。
-  # squash マージのコミット名は PR タイトルになるため、代わりに pr-title-lint で担保する。
-  commit-lint:
-    name: "Commit message (type(scope): subject)"
-    if: github.event_name == 'pull_request' && github.head_ref != 'develop'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Check commit messages
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          pattern='^(feat|fix|docs|chore|refactor|test|ci)(\([^)]+\))?!?: ?.+'
-          fail=0
-          while IFS= read -r subject; do
-            [[ -z "$subject" ]] && continue
-            [[ "$subject" =~ ^Merge\  ]] && continue
-            if [[ "$subject" =~ $pattern ]]; then
-              echo "✅ $subject"
-            else
-              echo "::error::Invalid commit message: $subject"
-              fail=1
-            fi
-          done < <(git log --no-merges --format=%s "$BASE_SHA..$HEAD_SHA")
-          if [[ $fail -ne 0 ]]; then
-            echo "形式: type(scope): subject / type: feat, fix, docs, chore, refactor, test, ci"
-          fi
-          exit $fail
-
-  pr-title-lint:
-    name: "PR title (type(scope): subject)"
-    if: github.event_name == 'pull_request' && github.head_ref != 'develop'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check PR title
-        env:
-          PR_TITLE: ${{ github.event.pull_request.title }}
-        run: |
-          pattern='^(feat|fix|docs|chore|refactor|test|ci)(\([^)]+\))?!?: ?.+'
-          if [[ "$PR_TITLE" =~ $pattern ]]; then
-            echo "✅ $PR_TITLE"
-          else
-            echo "::error::PR タイトルが規約に合っていません: $PR_TITLE"
-            echo "squash マージ時のコミット名になるため、type(scope): subject で付けてください。"
-            exit 1
-          fi
-
-  docs-as-code:
-    name: Docs as Code (src/ changes need docs/)
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Require docs/ update when src/ changes
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          SKIP_DOCS: ${{ contains(github.event.pull_request.labels.*.name, 'skip-docs') }}
-        run: |
-          changed=$(git diff --name-only "$BASE_SHA...$HEAD_SHA")
-          echo "$changed"
-          if echo "$changed" | grep -q '^src/' && ! echo "$changed" | grep -q '^docs/'; then
-            if [[ "$SKIP_DOCS" == "true" ]]; then
-              echo "⚠️ src/ changed without docs/, but 'skip-docs' label is set."
-              exit 0
-            fi
-            echo "::error::src/ が変更されていますが docs/ が更新されていません（Docs as Code）。"
-            echo "更新不要な場合は 'skip-docs' ラベルを付け、理由を PR 本文に書いてください。"
-            exit 1
-          fi
-          echo "✅ OK"
