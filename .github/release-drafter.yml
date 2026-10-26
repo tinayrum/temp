@@ -1,5 +1,6 @@
-name-template: 'v$NEXT_PATCH_VERSION'
-tag-template: 'v$NEXT_PATCH_VERSION'
+# 版数は version-resolver で、前回のリリース以降に main に入った PR のラベルから決まる
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
 template: |
   ## Changes
   $CHANGES

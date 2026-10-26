@@ -54,6 +54,17 @@ gitGraph
 1. develop がステージングとして確認済みであることを確かめる。
 2. `develop` → `main` の PR（またはバージョン調整が要る場合は `release/*` → `main`）を作る。
 3. main へのマージで `release-drafter` がリリースノートとタグを自動作成する。タグは手で作らない。
+    版数は、前回のリリース以降に main に入った PR のラベルで決まる（`.github/release-drafter.yml` の `version-resolver`）。
+
+    | PR のラベル | 上がる版数 |
+    | :--- | :--- |
+    | `major` | Major |
+    | `feature` / `enhancement` | Minor |
+    | 上記以外（`bugfix` / `fix` / `docs` など） | Patch |
+
+    複数の PR が含まれる場合は、いちばん大きい版数の上げ方が採られる。ラベルはブランチ名から自動で付くため、
+    ブランチの prefix（`feature/` → Minor など）がそのまま版数に効く。
+
 4. `release/*` / `hotfix/*` を使った場合は、同じブランチから `develop` への PR も作り、差分を戻す。
 
 ## コミットメッセージ
