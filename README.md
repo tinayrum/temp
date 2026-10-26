@@ -46,7 +46,7 @@ mkdocs serve                  # http://127.0.0.1:8000 でドキュメントを�
 
 - [ ] `main` から `develop` ブランチを作成する（テンプレートからの作成では main しか複製されない）
 - [ ] リポジトリ設定のデフォルトブランチを `develop` にする（PR の既定のマージ先を develop にするため）
-- [ ] Settings → General → Pull Requests で squash マージを許可し、既定のコミットメッセージを「Pull request title」にする
+- [ ] Settings → General → Pull Requests で squash マージとマージコミット（Allow merge commits）の両方を許可し、squash の既定のコミットメッセージを「Pull request title」にする（日々の PR は squash、リリース PR は版数とリリースノートを正しく作るためマージコミットでマージする）
 - [ ] Actions の「Sync Labels」を実行し、`.github/labels.yml` のラベルを作成する
 
 ## 🤖 AI エージェントを使う場合
