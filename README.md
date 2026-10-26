@@ -55,6 +55,7 @@ mkdocs serve                  # http://127.0.0.1:8000 でドキュメントを�
 ツール固有の補足は `CLAUDE.md` と `.github/copilot-instructions.md`、
 Claude Code の権限設定は `.claude/settings.json` にある。
 プロジェクト固有のビルド・テスト手順は `AGENTS.md` に追記して育てること。
+個人ごとの判断の委任（例: 「docs の軽微な修正は G1 を省いてよい」）は、`CLAUDE.local.md`（`.gitignore` 済みでコミットされない）に書ける。
 
 Claude Code は単体で「計画 → 実装 → 作業報告 → PR → マージ」まで進める前提で設定している。人間の役割は次の 2 つ。
 
