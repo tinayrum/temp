@@ -36,7 +36,7 @@ mkdocs build --strict         # PR を出す前に必ず通す
   `main` に PR してよいのは `develop` / `release/*` / `hotfix/*` だけ。
   `hotfix/*` は `main` から切り、`main` へのマージ後に `develop` へも戻す。
 - `.github/workflows/check_branch.yml` が PR 時に prefix とマージ先を検証し、違反すると CI が落ちる。
-- ラベルはブランチ名と変更ファイルから自動付与される（`.github/labeler.yml`）。手動で付けない。
+- ラベルはブランチ名から自動付与される（`.github/labeler.yml`）。手動で付けない。
 
 ## コミット
 

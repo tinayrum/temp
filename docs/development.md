@@ -167,7 +167,7 @@ PR 作成時は同じ内容を PR 本文の「作業報告」に入れる。
 | :--- | :--- | :--- |
 | `ci.yml` | PR（main / develop 向け）、develop への push | `mkdocs build --strict`、コミットメッセージ・PR タイトル検査（develop → main の PR は対象外）、Docs as Code 検査 |
 | `check_branch.yml` | PR | ブランチ名 prefix とマージ先の組み合わせ検査 |
-| `pr-labeler.yml` | PR | ブランチ名・変更ファイルからラベル付与 |
+| `pr-labeler.yml` | PR | ブランチ名からラベル付与（`docs` も `docs/` ブランチだけに付く。リリースノートで同じ PR が 2 区分に出ないようにするため） |
 | `release-drafter.yml` | main への push | リリースノート・タグの自動作成（`GITHUB_TOKEN` で動く） |
 
 `ci.yml` / `check_branch.yml` / `release-drafter.yml` は、[tinayrum/.github](https://github.com/tinayrum/.github) の再利用ワークフロー

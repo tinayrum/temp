@@ -18,10 +18,10 @@ hotfix:
 release:
   - head-branch: ['^release/', '^rel/']
 
+# docs/ の変更では付けない。Docs as Code で docs も直す feature・bugfix の PR に付くと、
+# リリースノートで「New Features」と「Documentation」の両方に同じ PR が出るため
 docs:
   - head-branch: ['^docs/', '^doc/']
-  - changed-files:
-       - any-glob-to-any-file: ['docs/**', '*.md']
 
 chore:
   - head-branch: ['^chore/', '^ch/']
