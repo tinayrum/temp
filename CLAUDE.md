@@ -28,6 +28,8 @@
 承認・確認・仕様の質問は、本文で自由に問いかけず、必ず `AskUserQuestion` ツールで出す。
 回答者は選択肢を選んで **Submit Answer** を押す。
 
+- `AskUserQuestion` を出す前に、同じ内容（背景・選択肢・推奨・理由）を本文にもテキストで書く。
+  選択肢の画面は文字をコピーできず、回答者が内容を引用したり後から読み返したりできないため。
 - 1 回 1〜4 問、各問 2〜4 択。`header` は 12 文字以内（例: `着手承認`、`マージ`、`命名`）。
 - 推奨案を先頭に置き、`label` の末尾に「（推奨）」を付ける。`description` に選んだ結果を書く。
 - 「Other」で自由記述が返ってきたら、要約して再度選択肢で確認してから動く。
@@ -63,6 +65,9 @@ options:
 - ローカル PC（Windows）と GCP 開発 VM（Ubuntu）の両方で動かす。
   OS 固有のパスやコマンドを手順に書かない。書く必要がある場合は両方を併記する。
 - 仮想環境は `.venv` を使う。グローバルに pip install しない。
+- 1 つのリポジトリ（作業フォルダ）で同時に動かす Claude Code のセッションは 1 つだけにする。
+  同じフォルダで 2 つ動かすと、ブランチの切り替えがぶつかるため。
+  並行して作業する場合は `git worktree add ../<repo>-<name> -b <prefix>/<name> develop` でフォルダを分け、それぞれで 1 セッションずつ動かす。
 
 ## 権限
 
@@ -74,6 +79,9 @@ options:
 ## コミット
 
 - メッセージは `type(scope): subject`。PR タイトルも同じ形式で付ける（`gh pr create --base develop --title "type(scope): subject"`）。
-- マージは承認後に `gh pr merge --squash` で行う。squash のコミット名は PR タイトルになる。
+- マージは承認後に行う。日々の PR（develop 向け）は `gh pr merge --squash`。squash のコミット名は PR タイトルになる。
+- リリース PR（`develop` → `main`）だけは `gh pr merge --merge`（マージコミット）で行う。
+  squash にすると develop の各 PR が main から見えなくなり、release-drafter の版数が Patch に、ノートが 1 件だけになるため
+  （詳細は `docs/development.md` の「リリース」）。
 - 既存ファイルは差分編集する。全文を書き直さない（改行コードの差分が全行に広がるため）。
 - 変更していないファイルをステージしない。`git add -A` ではなくパスを指定する。

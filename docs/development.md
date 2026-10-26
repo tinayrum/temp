@@ -53,8 +53,25 @@ gitGraph
 
 1. develop がステージングとして確認済みであることを確かめる。
 2. `develop` → `main` の PR（またはバージョン調整が要る場合は `release/*` → `main`）を作る。
-3. main へのマージで `release-drafter` がリリースノートとタグを自動作成する。タグは手で作らない。
-4. `release/*` / `hotfix/*` を使った場合は、同じブランチから `develop` への PR も作り、差分を戻す。
+3. G3 の承認後、リリース PR は **マージコミット**（`gh pr merge --merge`）でマージする。squash にしない。
+    `release-drafter` は、main に入ったコミットに対応する PR のラベルで版数とリリースノートを作る。
+    squash にすると main には「リリース PR の 1 コミット」しか入らず、develop で積み上げた各 PR が見えなくなる。
+    その結果、版数は常に Patch になり、ノートもリリース PR の 1 件だけになる。
+    マージコミットなら develop の各コミット（＝各 PR）が main の履歴に入るため、各 PR のラベルが使われる。
+    リリース PR 自体（`develop` ラベル）はノートに出さない（`.github/release-drafter.yml` の `exclude-labels`）。
+4. main へのマージで `release-drafter` がリリースノートとタグを自動作成する。タグは手で作らない。
+    版数は、前回のリリース以降に main に入った PR のラベルで決まる（`.github/release-drafter.yml` の `version-resolver`）。
+
+    | PR のラベル | 上がる版数 |
+    | :--- | :--- |
+    | `major` | Major |
+    | `feature` / `enhancement` | Minor |
+    | 上記以外（`bugfix` / `fix` / `docs` など） | Patch |
+
+    複数の PR が含まれる場合は、いちばん大きい版数の上げ方が採られる。ラベルはブランチ名から自動で付くため、
+    ブランチの prefix（`feature/` → Minor など）がそのまま版数に効く。
+
+5. `release/*` / `hotfix/*` を使った場合は、同じブランチから `develop` への PR も作り、差分を戻す。
 
 ## コミットメッセージ
 
@@ -62,7 +79,8 @@ gitGraph
 - type は `feat` / `fix` / `docs` / `chore` / `refactor` / `test` / `ci`。scope は任意。
 - 1 コミット 1 目的。CI（`ci.yml` の commit-lint）が PR 内の全コミットを検査する。
 - **PR タイトルも同じ形式にする**（例: `ci: skip commit-lint on release PRs`）。
-  マージは squash を基本とし、squash のコミット名は PR タイトルになる（リポジトリ設定で既定値を「PR タイトル」にする）。
+  日々の PR（develop 向け）は squash でマージし、squash のコミット名は PR タイトルになる（リポジトリ設定で既定値を「PR タイトル」にする）。
+  リリース PR（`develop` → `main`）だけはマージコミットでマージする（理由は「リリース」を参照）。
   CI（`ci.yml` の pr-title-lint）が PR タイトルを検査する。
 - `develop` → `main`（リリース）の PR では、develop で検査済みのため commit-lint と pr-title-lint を行わない。
 
@@ -149,7 +167,7 @@ PR 作成時は同じ内容を PR 本文の「作業報告」に入れる。
 | :--- | :--- | :--- |
 | `ci.yml` | PR（main / develop 向け）、develop への push | `mkdocs build --strict`、コミットメッセージ・PR タイトル検査（develop → main の PR は対象外）、Docs as Code 検査 |
 | `check_branch.yml` | PR | ブランチ名 prefix とマージ先の組み合わせ検査 |
-| `pr-labeler.yml` | PR | ブランチ名・変更ファイルからラベル付与 |
+| `pr-labeler.yml` | PR | ブランチ名からラベル付与（`docs` も `docs/` ブランチだけに付く。リリースノートで同じ PR が 2 区分に出ないようにするため） |
 | `release-drafter.yml` | main への push | リリースノート・タグの自動作成（`GITHUB_TOKEN` で動く） |
 
 `ci.yml` / `check_branch.yml` / `release-drafter.yml` は、[tinayrum/.github](https://github.com/tinayrum/.github) の再利用ワークフロー
