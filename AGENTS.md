@@ -42,7 +42,9 @@ mkdocs build --strict         # PR を出す前に必ず通す
 
 - `type(scope): subject` の形式。type は feat / fix / docs / chore / refactor / test / ci。
 - 1コミット1目的。無関係なフォーマット変更や改行コードの一括変換を混ぜない。
-- PR タイトルも同じ形式にする。マージは squash を基本とし、PR タイトルがそのままコミット名になる。
+- PR タイトルも同じ形式にする。日々の PR は squash でマージし、PR タイトルがそのままコミット名になる。
+- リリース PR（`develop` → `main`）だけはマージコミットでマージする。squash にすると develop の各 PR が
+  main から見えなくなり、`release-drafter` の版数とリリースノートが正しく作られない（`docs/development.md` の「リリース」）。
 - `.github/workflows/ci.yml` が PR 内の全コミットのメッセージと PR タイトルを検査する（develop → main の PR は対象外）。
 
 ## Issue 駆動
