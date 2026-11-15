@@ -11,6 +11,14 @@
 - コミットメッセージは `type(scope): subject`。
 - Docs as Code: `src/` を変更したら `docs/` も同じ PR で更新し、新規ページは `mkdocs.yml` の `nav` に登録する。
 - 図は Mermaid で書く。
+- 着手前に設計業務（オントロジー図 → 要件定義 → テストシナリオ → 設計）を行い、`docs/design/` に残す。
+
+PR をレビューするときの観点:
+
+- `docs/design/test-scenarios.md` のテストシナリオを満たしているか。満たしていない項目を指摘する。
+- `docs/design/requirements.md` の対象外に踏み込んでいないか。
+- `src/` の変更に対して `docs/` が更新されているか。
+- 認証情報・顧客名・個人情報が含まれていないか。
 - `.github/workflows/` の変更は提案に留め、実行しない。
 - 認証情報・顧客名・個人情報を提案に含めない。
 
