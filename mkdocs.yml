@@ -71,3 +71,8 @@ extra_javascript:
 nav:
   - Home: index.md
   - 開発ガイド: development.md
+  - 設計:
+    - オントロジー図: design/ontology.md
+    - 要件定義: design/requirements.md
+    - テストシナリオ: design/test-scenarios.md
+    - 設計: design/design.md
